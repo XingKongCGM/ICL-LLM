@@ -1,0 +1,24 @@
+#
+#
+# Document created on Tue Aug 26 14:17:09 2025
+# @author: Carlos Gonzalez
+# Material Data Division,
+# National Institute of Standatds and Technology,
+# Gaithersburg, MD. 20889
+#
+#
+
+# Core (Apple Silicon only: mlx / mlx-lm require an M-series Mac)
+mlx-lm
+huggingface_hub
+numpy
+pandas
+scikit-learn
+matplotlib
+
+# Optional but recommended
+pyyaml       # properties.yaml parsing (a built-in fallback parser exists)
+scipy        # exact Student's t critical values in Forecast (lookup table otherwise)
+
+# Optional: Streamlit dashboard (icl_dashboard.py)
+streamlit

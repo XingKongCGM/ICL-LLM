@@ -1,0 +1,133 @@
+# Property configuration for the ICL sweep.
+#
+#
+# Created on Tue Aug 26 14:17:09 2025
+# @author: Carlos Gonzalez
+# Material Data Division,
+# National Institute of Standatds and Technology,
+# Gaithersburg, MD. 20889
+# 
+#
+# Each entry maps a property to its training / validation / predict CSVs
+# and its metadata (variable name in the CSV, units, human-readable
+# title for plots).  Edit DATA_ROOT below if your data lives elsewhere.
+#
+# Keys in each property block:
+#   var          : column name in the CSV for the property (used both
+#                  as the y-axis variable and in prompt formatting)
+#   title        : human-readable string for plots and reports
+#   units        : physical units (or "-" for dimensionless log-scaled
+#                  properties).  Informational only; kept consistent with
+#                  the units stated in the prompt templates
+#                  (get_template_prompts in RCHAT_PChem_Properties.py).
+#   training     : CSV with training set (Molecule + property value)
+#   validation   : CSV with an INDEPENDENT validation set (Molecule + property value)
+#   predict      : CSV of query molecules.
+#                    * Prediction (--predict) scores against known values,
+#                      so rows WITHOUT a property value are dropped.
+#                    * Forecast (--forecast) reads ONLY the Molecule
+#                      column, so y-values may be absent.
+#   optimal_dir  : directory where the best-cycle demonstration set is
+#                  written during Testing and read back during Prediction
+#                  / Forecast.  The actual filename is per-model:
+#                  {optimal_dir}/{model_slug}_optimal_samples.csv
+#                  so different models predicting the same property do NOT
+#                  overwrite one another.  If omitted, the code falls back
+#                  to the per-cell run folder (out_dir/optimal_samples.csv).
+# ---------------------------------------------------------------------
+
+# Absolute path to your data directory.  ${DATA_ROOT} below is expanded
+# from THIS key (not from a shell environment variable).
+DATA_ROOT: /path/to/your/data
+
+
+
+
+properties:
+
+  LOGCMC:
+    var:         logCMC
+    title:       "Log Critical Micelle Concentration"
+    units:       "log(mol/L)"
+    training:    ${DATA_ROOT}/CMC/PFAS_LogCMC_Training.csv
+    validation:  ${DATA_ROOT}/CMC/PFAS_LogCMC_Validation.csv
+    predict:     ${DATA_ROOT}/CMC/PFAS_LogCMC_Predict.csv
+    optimal_dir: ${DATA_ROOT}/CMC/Optimal_Training_Set
+
+  MP:
+    var:         mpC
+    title:       "Melting Point"
+    units:       "degrees C"
+    training:    ${DATA_ROOT}/Melting_Point/PFAS_MP_Training.csv
+    validation:  ${DATA_ROOT}/Melting_Point/PFAS_MP_Validation.csv
+    predict:     ${DATA_ROOT}/Melting_Point/PFAS_MP_Predict.csv
+    optimal_dir: ${DATA_ROOT}/Melting_Point/Optimal_Training_Set
+
+  BP:
+    var:         bpC
+    title:       "Boiling Point"
+    units:       "degrees C"
+    training:    ${DATA_ROOT}/Boiling_Point/PFAS_BP_Training.csv
+    validation:  ${DATA_ROOT}/Boiling_Point/PFAS_BP_Validation.csv
+    predict:     ${DATA_ROOT}/Boiling_Point/PFAS_BP_Predict.csv
+    optimal_dir: ${DATA_ROOT}/Boiling_Point/Optimal_Training_Set
+
+  LOGKOW:
+    var:         logKow
+    title:       "Log Octanol-Water Partition Coefficient"
+    units:       "log units"
+    training:    ${DATA_ROOT}/LogKow/PFAS_LogKow_Training.csv
+    validation:  ${DATA_ROOT}/LogKow/PFAS_LogKow_Validation.csv
+    predict:     ${DATA_ROOT}/LogKow/PFAS_LogKow_Predict.csv
+    optimal_dir: ${DATA_ROOT}/LogKow/Optimal_Training_Set
+
+  LOGS:
+    var:         logS
+    title:       "Log Aqueous Solubility"
+    units:       "log(mol/L)"
+    training:    ${DATA_ROOT}/Solubility/PFAS_Sol_Training.csv
+    validation:  ${DATA_ROOT}/Solubility/PFAS_Sol_Validation.csv
+    predict:     ${DATA_ROOT}/Solubility/PFAS_Sol_Predict.csv
+    optimal_dir: ${DATA_ROOT}/Solubility/Optimal_Training_Set
+
+  PKA:
+    var:         pka
+    title:       "Acid Dissociation Constant"
+    units:       "-"
+    training:    ${DATA_ROOT}/PKa/PFAS_pKa_Training.csv
+    validation:  ${DATA_ROOT}/PKa/PFAS_pKa_Validation.csv
+    predict:     ${DATA_ROOT}/PKa/PFAS_pKa_Predict.csv
+    optimal_dir: ${DATA_ROOT}/PKa/Optimal_Training_Set
+
+  VP:
+    var:         logVP
+    title:       "Negative Log Vapor Pressure"
+    units:       "-log(mmHg)"
+    training:    ${DATA_ROOT}/Vapor_Pressure/PFAS_VP_Training.csv
+    validation:  ${DATA_ROOT}/Vapor_Pressure/PFAS_VP_Validation.csv
+    predict:     ${DATA_ROOT}/Vapor_Pressure/PFAS_VP_Predict.csv
+    optimal_dir: ${DATA_ROOT}/Vapor_Pressure/Optimal_Training_Set
+
+  HLC:
+    var:         logHLC
+    title:       "Negative Log Henry's Law Constant"
+    units:       "-log(atm m^3/mol)"
+    training:    ${DATA_ROOT}/Henry_Law/PFAS_HL_Training.csv
+    validation:  ${DATA_ROOT}/Henry_Law/PFAS_HL_Validation.csv
+    predict:     ${DATA_ROOT}/Henry_Law/PFAS_HL_Predict.csv
+    optimal_dir: ${DATA_ROOT}/Henry_Law/Optimal_Training_Set
+
+
+# =====================================================================
+# NOTE about var names (2nd column of the training CSVs):
+# =====================================================================
+# For batch mode we read the property column name from the config's
+# `var` field.  If any of these are wrong for your particular CSVs,
+# edit here; the user's actual column headers take precedence.
+#
+# NOTE about optimal_dir:
+# The Testing phase writes {optimal_dir}/{model_slug}_optimal_samples.csv
+# per (model, property) cell.  Prediction and Forecast read the SAME
+# per-model file back.  Ensure the directory exists or is creatable by
+# the process (the code calls os.makedirs(optimal_dir, exist_ok=True)).
+# =====================================================================
